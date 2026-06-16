@@ -1,0 +1,147 @@
+name: 🎲 Lucky Ascension - Build & Release
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
+
+  # Manuel tetikleme
+  workflow_dispatch:
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # DERLEME İŞİ
+  # ─────────────────────────────────────────────────────────────────
+  build:
+    name: 🔨 Mod Derle
+    runs-on: ubuntu-latest
+
+    steps:
+      # Kodu indir
+      - name: 📥 Kaynak Kodunu İndir
+        uses: actions/checkout@v4
+
+      # Java 17 kur (Forge 1.20.x için gerekli)
+      - name: ☕ Java 17 Kur
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # Gradle wrapper'a çalıştırma izni ver
+      - name: 🔑 Gradle İzinleri Ver
+        run: chmod +x ./gradlew
+
+      # Gradle önbelleğini kullan (derlemeyi hızlandırır)
+      - name: 💾 Gradle Önbelleğini Yükle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/loom-cache
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ForgeGradle setup (gerekli Minecraft dosyalarını indir)
+      - name: 🎮 Forge Ortamını Hazırla
+        run: ./gradlew --no-daemon setupDecompWorkspace
+        continue-on-error: true
+
+      # Modu derle
+      - name: 🏗️ Modu Derle
+        run: ./gradlew --no-daemon build
+        env:
+          JAVA_TOOL_OPTIONS: "-Xmx3G"
+
+      # Derleme çıktısını listele
+      - name: 📋 Derleme Çıktısını Göster
+        run: ls -la build/libs/
+
+      # JAR dosyasını artifact olarak kaydet
+      - name: 📦 JAR Dosyasını Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: lucky-ascension-${{ github.sha }}
+          path: build/libs/*.jar
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────────────
+  # RELEASE İŞİ (sadece tag push'larında çalışır)
+  # ─────────────────────────────────────────────────────────────────
+  release:
+    name: 🚀 Release Oluştur
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: 📥 Kaynak Kodunu İndir
+        uses: actions/checkout@v4
+
+      - name: ☕ Java 17 Kur
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🔑 Gradle İzinleri Ver
+        run: chmod +x ./gradlew
+
+      - name: 🏗️ Release için Derle
+        run: ./gradlew --no-daemon build
+        env:
+          JAVA_TOOL_OPTIONS: "-Xmx3G"
+
+      # GitHub Release oluştur ve JAR'ı ekle
+      - name: 🎉 GitHub Release Oluştur
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/*.jar
+          name: "Lucky Ascension ${{ github.ref_name }}"
+          body: |
+            ## 🎲 Lucky Ascension ${{ github.ref_name }}
+
+            ### ✨ Özellikler
+            - 🎯 Şans seviyesi sistemi
+            - ⚔️ Mob öldürünce OP eşya ödülleri
+            - 🥚 Şans Artırma Yumurtası (craft edilebilir)
+            - 👨‍🌾 Şans Ustası köylüsü
+            - 📖 Oyun içi rehber kitap
+            - 💾 Veri kalıcılığı (dünya kapanınca kaybolmaz)
+
+            ### 📥 Kurulum
+            1. [Forge 1.20.1](https://files.minecraftforge.net/) kur
+            2. JAR dosyasını `mods/` klasörüne koy
+            3. Oyunu başlat ve şansını dene!
+
+            ### 🎮 Minecraft Sürümü
+            - Minecraft: 1.20.1
+            - Forge: 47.x
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ Release Oluştur
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/*.jar
+          name: "Lucky Ascension ${{ github.ref_name }}"
+          body: |
+            ## 🎲 Lucky Ascension ${{ github.ref_name }}
+
+            ### ✨ Özellikler
+            - 🎯 Şans seviyesi sistemi
+            - ⚔️ Mob öldürünce OP eşya ödülleri
+            - 🥚 Şans Artırma Yumurtası (craft edilebilir)
+            - 👨‍🌾 Şans Ustası köylüsü
+            - 📖 Oyun içi rehber kitap
+            - 💾 Veri kalıcılığı (dünya kapanınca kaybolmaz)
+
+            ### 📥 Kurulum
+            1. [Forge 1.20.1](https://files.minecraftforge.net/) k
