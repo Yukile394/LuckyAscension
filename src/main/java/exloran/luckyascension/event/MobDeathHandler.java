@@ -23,7 +23,6 @@ public class MobDeathHandler {
 
     private static void onDeath(LivingEntity entity, DamageSource source) {
         if (!(entity.getWorld() instanceof ServerWorld serverWorld)) return;
-        if (!serverWorld.getServer().isSingleplayer()) return;
         if (!(source.getAttacker() instanceof ServerPlayerEntity player)) return;
         if (!LuckRewards.isHostile(entity)) return;
 
