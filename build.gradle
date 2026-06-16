@@ -1,0 +1,112 @@
+// Lucky Ascension - Forge Build Konfigürasyonu
+// Minecraft 1.20.1 | Forge 47.x
+
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.+', changing: true
+    }
+}
+
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+group = 'com.luckyascension'
+version = '1.20.1-1.0.0'
+archivesBaseName = 'luckyascension'
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+
+    // IDE çalıştırma konfigürasyonları
+    runs {
+        // Oyun client - test için
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'luckyascension'
+            mods {
+                luckyascension {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        // Oyun server - multiplayer test için (gerekli değil ama ekledik)
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'luckyascension'
+            mods {
+                luckyascension {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.minecraftforge.net' }
+}
+
+dependencies {
+    // Minecraft Forge bağımlılığı
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+}
+
+// JAR dosyası manifest ayarları
+jar {
+    manifest {
+        attributes([
+            'Specification-Title'     : 'luckyascension',
+            'Specification-Vendor'    : 'LuckyAscension',
+            'Specification-Version'   : '1',
+            'Implementation-Title'    : project.name,
+            'Implementation-Version'  : project.jar.archiveVersion,
+            'Implementation-Vendor'   : 'LuckyAscension',
+            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+// Kaynak setleri
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+// Maven yayın ayarları
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+// Derleme tamamlandığında bilgi ver
+tasks.build.doLast {
+    println "╔═══════════════════════════════════════════╗"
+    println "║   Lucky Ascension derlendi!               ║"
+    println "║   JAR dosyası: build/libs/ klasöründe     ║"
+    println "╚═══════════════════════════════════════════╝"
+}
