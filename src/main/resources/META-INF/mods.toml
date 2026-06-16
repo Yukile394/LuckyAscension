@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+
+[[mods]]
+    modId="luckyascension"
+    version="1.0.0"
+    displayName="Lucky Ascension"
+    description='''
+        Lucky Ascension - Şans sistemi ile güçlen!
+        Düşman yaratıkları öldür, OP eşyalar kazan,
+        şans seviyeni artır ve oyunu domine et!
+    '''
+    logoFile="luckyascension.png"
+    authors="LuckyAscension Team"
+    displayURL="https://github.com/yourusername/LuckyAscension"
+
+    [[mods.dependencies.luckyascension]]
+        modId="forge"
+        mandatory=true
+        versionRange="[47,)"
+        ordering="NONE"
+        side="BOTH"
+
+    [[mods.dependencies.luckyascension]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[1.20.1,1.22)"
+        ordering="NONE"
+        side="BOTH"
