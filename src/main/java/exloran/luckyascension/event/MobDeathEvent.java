@@ -1,4 +1,4 @@
-package com.luckyascension.event;
+package exloran.luckyascension.event;
 
 import com.luckyascension.capability.LuckCapabilityProvider;
 import com.luckyascension.util.LuckRewardUtil;
