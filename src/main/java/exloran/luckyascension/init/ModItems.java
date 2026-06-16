@@ -1,4 +1,4 @@
-package com.luckyascension.init;
+package exloran.luckyascension.init;
 
 import com.luckyascension.LuckyAscension;
 import com.luckyascension.item.LuckBoostItem;
