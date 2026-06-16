@@ -1,4 +1,4 @@
-package com.luckyascension.capability;
+package exloran.luckyascension.capability;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
