@@ -1,6 +1,6 @@
 package exloran.luckyascension.init;
 
-import com.luckyascension.LuckyAscension;
+import exloran.luckyascension.LuckyAscension;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -17,6 +17,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 import java.util.Set;
 
+@net.minecraftforge.fml.common.Mod.EventBusSubscriber(modid = LuckyAscension.MOD_ID)
 public class ModVillagers {
 
     public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS =
