@@ -39,7 +39,6 @@ public class LuckEggItem extends Item {
         World world = context.getWorld();
         if (world.isClient) return ActionResult.SUCCESS;
         if (!(world instanceof ServerWorld serverWorld)) return ActionResult.PASS;
-        if (!serverWorld.getServer().isSingleplayer()) return ActionResult.PASS;
 
         BlockPos pos = context.getBlockPos().up();
 
