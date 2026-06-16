@@ -1,4 +1,4 @@
-package com.luckyascension.capability;
+package exloran.luckyascension.capability;
 
 import com.luckyascension.LuckyAscension;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
