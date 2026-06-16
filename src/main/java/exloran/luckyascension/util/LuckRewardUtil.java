@@ -36,8 +36,6 @@ public class LuckRewardUtil {
         return getGenericRewards();
     }
 
-    // ─── Mob Ödülleri ───────────────────────────────────────────
-
     private static List<ItemStack> getZombieRewards() {
         List<ItemStack> r = new ArrayList<>();
         r.add(new ItemStack(Items.DIAMOND, 3));
@@ -149,13 +147,6 @@ public class LuckRewardUtil {
         return r;
     }
 
-    // ─── Büyülü Eşya Oluşturucular ──────────────────────────────
-
-    /**
-     * DÜZELTME (Hata 3): stack.enchant() 1.20.1'de deprecated, bazı ortamlarda çalışmıyor.
-     * EnchantmentHelper.enchantItem() yerine EnchantmentInstance + EnchantedBookItem
-     * pattern'i ile doğrudan tag'e yazıyoruz — en güvenli yöntem.
-     */
     private static ItemStack createEnchantedBow() {
         ItemStack bow = new ItemStack(Items.BOW);
         addEnchantment(bow, Enchantments.POWER_ARROWS, 5);
@@ -190,7 +181,7 @@ public class LuckRewardUtil {
         addEnchantment(stack, Enchantments.SHARPNESS, 5);
         addEnchantment(stack, Enchantments.UNBREAKING, 3);
         addEnchantment(stack, Enchantments.MENDING, 1);
-        addEnchantment(stack, Enchantments.LOOTING, 3);
+        addEnchantment(stack, Enchantments.MOB_LOOTING, 3);
         return stack;
     }
 
@@ -203,18 +194,12 @@ public class LuckRewardUtil {
         return stack;
     }
 
-    /**
-     * 1.20.1 Forge için güvenli enchantment ekleme.
-     * getOrCreateTag + Enchantments listesi üzerinden yazar.
-     * stack.enchant() deprecated olduğundan bu helper kullanılıyor.
-     */
     private static void addEnchantment(ItemStack stack,
                                         net.minecraft.world.item.enchantment.Enchantment enchantment,
                                         int level) {
         net.minecraft.nbt.CompoundTag tag = stack.getOrCreateTag();
         net.minecraft.nbt.ListTag enchList = tag.getList("Enchantments", net.minecraft.nbt.Tag.TAG_COMPOUND);
 
-        // Aynı enchantment zaten varsa güncelle
         net.minecraft.resources.ResourceLocation enchId =
             net.minecraftforge.registries.ForgeRegistries.ENCHANTMENTS.getKey(enchantment);
         if (enchId == null) return;
@@ -230,7 +215,6 @@ public class LuckRewardUtil {
             }
         }
 
-        // Yeni enchantment ekle
         net.minecraft.nbt.CompoundTag enchTag = new net.minecraft.nbt.CompoundTag();
         enchTag.putString("id", enchIdStr);
         enchTag.putShort("lvl", (short) level);
