@@ -1,4 +1,4 @@
-package com.luckyascension.item;
+package exloran.luckyascension.item;
 
 import com.luckyascension.capability.ILuckCapability;
 import com.luckyascension.capability.LuckCapabilityProvider;
