@@ -1,4 +1,4 @@
-package com.luckyascension.event;
+package exloran.luckyascension.event;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
