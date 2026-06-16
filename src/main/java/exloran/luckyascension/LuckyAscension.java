@@ -1,12 +1,12 @@
 package exloran.luckyascension;
 
-import com.luckyascension.capability.LuckCapabilityProvider;
-import com.luckyascension.event.LuckEvent;
-import com.luckyascension.event.MobDeathEvent;
-import com.luckyascension.event.PlayerJoinEvent;
-import com.luckyascension.init.ModCreativeTabs;
-import com.luckyascension.init.ModItems;
-import com.luckyascension.init.ModVillagers;
+import exloran.luckyascension.capability.LuckCapabilityProvider;
+import exloran.luckyascension.event.LuckEvent;
+import exloran.luckyascension.event.MobDeathEvent;
+import exloran.luckyascension.event.PlayerJoinEvent;
+import exloran.luckyascension.init.ModCreativeTabs;
+import exloran.luckyascension.init.ModItems;
+import exloran.luckyascension.init.ModVillagers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
