@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NEN",
+    "EEE",
+    "NEN"
+  ],
+  "key": {
+    "N": { "item": "minecraft:netherite_ingot" },
+    "E": { "item": "minecraft:diamond" }
+  },
+  "result": {
+    "id": "luckyascension:luck_egg",
+    "count": 1
+  }
+}
