@@ -1,7 +1,5 @@
-package com.luckyascension.util;
+package exloran.luckyascension.util;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -9,17 +7,11 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.world.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Her mob tipi için ödül listeleri
- */
 public class LuckRewards {
 
     public static List<ItemStack> getRewards(LivingEntity entity, Random random) {
@@ -44,8 +36,6 @@ public class LuckRewards {
             || entity instanceof EnderDragonEntity
             || entity instanceof WitherEntity;
     }
-
-    // ── Ödül Listeleri ───────────────────────────────────────────────────────
 
     private static List<ItemStack> zombieRewards() {
         List<ItemStack> r = new ArrayList<>();
