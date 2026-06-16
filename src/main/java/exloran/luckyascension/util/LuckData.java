@@ -2,6 +2,9 @@ package exloran.luckyascension.util;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.PersistentStateManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,19 +17,15 @@ public class LuckData {
     private static final String MOD_NAMESPACE = "luckyascension";
 
     private static final Map<UUID, Integer> luckCache = new HashMap<>();
+    private static final Map<UUID, Boolean> bookGivenCache = new HashMap<>();
 
     public static int getLuckLevel(ServerPlayerEntity player) {
-        if (luckCache.containsKey(player.getUuid())) {
-            return luckCache.get(player.getUuid());
-        }
-        return 1;
+        return luckCache.getOrDefault(player.getUuid(), 1);
     }
 
     public static void setLuckLevel(ServerPlayerEntity player, int level) {
         luckCache.put(player.getUuid(), Math.max(1, level));
-        NbtCompound nbt = getModData(player);
-        nbt.putInt(LUCK_KEY, level);
-        saveModData(player, nbt);
+        saveToState(player.getServer(), player.getUuid());
     }
 
     public static int increaseLuck(ServerPlayerEntity player) {
@@ -45,34 +44,81 @@ public class LuckData {
     }
 
     public static boolean isBookGiven(ServerPlayerEntity player) {
-        return getModData(player).getBoolean(BOOK_KEY);
+        return bookGivenCache.getOrDefault(player.getUuid(), false);
     }
 
     public static void markBookGiven(ServerPlayerEntity player) {
-        NbtCompound nbt = getModData(player);
-        nbt.putBoolean(BOOK_KEY, true);
-        saveModData(player, nbt);
+        bookGivenCache.put(player.getUuid(), true);
+        saveToState(player.getServer(), player.getUuid());
     }
 
     public static void loadFromPlayer(ServerPlayerEntity player) {
-        NbtCompound nbt = getModData(player);
-        int level = nbt.contains(LUCK_KEY) ? nbt.getInt(LUCK_KEY) : 1;
-        luckCache.put(player.getUuid(), level);
+        MinecraftServer server = player.getServer();
+        if (server == null) return;
+
+        LuckPersistentState state = getState(server);
+        UUID uuid = player.getUuid();
+        String uuidStr = uuid.toString();
+
+        NbtCompound nbt = state.data;
+        if (nbt.contains(uuidStr)) {
+            NbtCompound playerNbt = nbt.getCompound(uuidStr);
+            int level = playerNbt.contains(LUCK_KEY) ? playerNbt.getInt(LUCK_KEY) : 1;
+            boolean bookGiven = playerNbt.contains(BOOK_KEY) && playerNbt.getBoolean(BOOK_KEY);
+            luckCache.put(uuid, level);
+            bookGivenCache.put(uuid, bookGiven);
+        } else {
+            luckCache.put(uuid, 1);
+            bookGivenCache.put(uuid, false);
+        }
     }
 
     public static void unloadPlayer(ServerPlayerEntity player) {
-        luckCache.remove(player.getUuid());
-    }
-
-    private static NbtCompound getModData(ServerPlayerEntity player) {
-        NbtCompound custom = player.getCustomData();
-        if (!custom.contains(MOD_NAMESPACE)) {
-            custom.put(MOD_NAMESPACE, new NbtCompound());
+        UUID uuid = player.getUuid();
+        MinecraftServer server = player.getServer();
+        if (server != null) {
+            saveToState(server, uuid);
         }
-        return custom.getCompound(MOD_NAMESPACE);
+        luckCache.remove(uuid);
+        bookGivenCache.remove(uuid);
     }
 
-    private static void saveModData(ServerPlayerEntity player, NbtCompound data) {
-        player.getCustomData().put(MOD_NAMESPACE, data);
+    private static void saveToState(MinecraftServer server, UUID uuid) {
+        if (server == null) return;
+        LuckPersistentState state = getState(server);
+        NbtCompound playerNbt = new NbtCompound();
+        playerNbt.putInt(LUCK_KEY, luckCache.getOrDefault(uuid, 1));
+        playerNbt.putBoolean(BOOK_KEY, bookGivenCache.getOrDefault(uuid, false));
+        state.data.put(uuid.toString(), playerNbt);
+        state.markDirty();
+    }
+
+    private static LuckPersistentState getState(MinecraftServer server) {
+        PersistentStateManager manager = server.getOverworld().getPersistentStateManager();
+        return manager.getOrCreate(
+            new PersistentState.Type<>(
+                LuckPersistentState::new,
+                LuckPersistentState::fromNbt,
+                null
+            ),
+            MOD_NAMESPACE
+        );
+    }
+
+    // Inner class for persistent state
+    public static class LuckPersistentState extends PersistentState {
+        public NbtCompound data = new NbtCompound();
+
+        public static LuckPersistentState fromNbt(NbtCompound nbt) {
+            LuckPersistentState state = new LuckPersistentState();
+            state.data = nbt.contains("data") ? nbt.getCompound("data") : new NbtCompound();
+            return state;
+        }
+
+        @Override
+        public NbtCompound writeNbt(NbtCompound nbt) {
+            nbt.put("data", data);
+            return nbt;
+        }
     }
 }
