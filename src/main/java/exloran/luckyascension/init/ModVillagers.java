@@ -1,4 +1,4 @@
-package com.luckyascension.init;
+package exloran.luckyascension.init;
 
 import com.luckyascension.LuckyAscension;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
