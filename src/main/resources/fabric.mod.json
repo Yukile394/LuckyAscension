@@ -11,7 +11,7 @@
 
   "entrypoints": {
     "main": [
-      "com.luckyascension.LuckyAscension"
+      "exloran.luckyascension.LuckyAscension"
     ]
   },
 
