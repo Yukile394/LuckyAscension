@@ -1,28 +1,21 @@
-package com.luckyascension.item;
+package exloran.luckyascension.item;
 
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.npc.VillagerEntity;
-import net.minecraft.entity.npc.VillagerProfession;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-/**
- * Şans Artırma Yumurtası
- * Bir blok yüzeyine sağ tıklayınca Şans Ustası köylüsü oluşturur.
- *
- * Craft: Netherite-Elmas-Netherite / Elmas-Elmas-Elmas / Netherite-Elmas-Netherite
- */
 public class LuckEggItem extends Item {
 
     public LuckEggItem(Settings settings) {
@@ -35,7 +28,7 @@ public class LuckEggItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.literal("§7Bu gizemli koylü,"));
         tooltip.add(Text.literal("§7sans gucunu artirabilir."));
         tooltip.add(Text.literal("§eYerlestir ve ticaret yap."));
@@ -45,15 +38,11 @@ public class LuckEggItem extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
         if (world.isClient) return ActionResult.SUCCESS;
-
         if (!(world instanceof ServerWorld serverWorld)) return ActionResult.PASS;
-
-        // Sadece single player
         if (!serverWorld.getServer().isSingleplayer()) return ActionResult.PASS;
 
         BlockPos pos = context.getBlockPos().up();
 
-        // Köylü oluştur
         VillagerEntity villager = EntityType.VILLAGER.create(serverWorld);
         if (villager == null) return ActionResult.FAIL;
 
@@ -61,27 +50,21 @@ public class LuckEggItem extends Item {
             pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0f, 0f
         );
 
-        // Librarian olarak ayarla (en yakın vanilla meslek)
         villager.setVillagerData(
             villager.getVillagerData().withProfession(VillagerProfession.LIBRARIAN)
         );
 
-        // İsim: Şans Ustası
         villager.setCustomName(Text.literal("§6§lSans Ustasi"));
         villager.setCustomNameVisible(true);
-
-        // Ölümsüz yap
         villager.setInvulnerable(true);
 
         serverWorld.spawnEntity(villager);
 
-        // Kullanıcıya mesaj
         PlayerEntity player = context.getPlayer();
         if (player != null) {
             player.sendMessage(Text.literal(
-                "§6§lSans Ustasi cagrildi! §eOnunla ticaret yapmak icin sag tikla."
+                "§6§lSans Ustasi cagrildi! §eOnunla ticaret yap."
             ), false);
-
             if (!player.isCreative()) {
                 context.getStack().decrement(1);
             }
