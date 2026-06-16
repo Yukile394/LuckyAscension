@@ -1,4 +1,4 @@
-package com.luckyascension.util;
+package exloran.luckyascension.util;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
