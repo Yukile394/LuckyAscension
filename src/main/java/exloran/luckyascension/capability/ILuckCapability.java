@@ -1,4 +1,4 @@
-package com.luckyascension.capability;
+package exloran.luckyascension.capability;
 
 /**
  * Şans Capability Arayüzü
