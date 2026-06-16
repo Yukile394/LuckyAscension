@@ -1,4 +1,4 @@
-package com.luckyascension.item;
+package exloran.luckyascension.item;
 
 import com.luckyascension.init.ModVillagers;
 import net.minecraft.ChatFormatting;
