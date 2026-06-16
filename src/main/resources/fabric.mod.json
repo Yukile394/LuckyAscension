@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "luckyascension",
+  "version": "1.0.0",
+  "name": "Lucky Ascension",
+  "description": "Sans sistemiyle guclen! Dusman yaratiklar oldur, OP esyalar kazan.",
+  "authors": ["LuckyAscension"],
+  "license": "MIT",
+
+  "environment": "*",
+
+  "entrypoints": {
+    "main": [
+      "com.luckyascension.LuckyAscension"
+    ]
+  },
+
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": "*",
+    "minecraft": ">=1.21"
+  }
+}
