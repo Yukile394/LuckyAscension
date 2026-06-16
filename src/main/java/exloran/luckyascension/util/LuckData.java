@@ -1,6 +1,7 @@
 package exloran.luckyascension.util;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
@@ -98,14 +99,13 @@ public class LuckData {
         return manager.getOrCreate(
             new PersistentState.Type<>(
                 LuckPersistentState::new,
-                LuckPersistentState::fromNbt,
+                (nbt, lookup) -> LuckPersistentState.fromNbt(nbt),
                 null
             ),
             MOD_NAMESPACE
         );
     }
 
-    // Inner class for persistent state
     public static class LuckPersistentState extends PersistentState {
         public NbtCompound data = new NbtCompound();
 
@@ -116,7 +116,7 @@ public class LuckData {
         }
 
         @Override
-        public NbtCompound writeNbt(NbtCompound nbt) {
+        public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
             nbt.put("data", data);
             return nbt;
         }
