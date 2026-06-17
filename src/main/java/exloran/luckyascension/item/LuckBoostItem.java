@@ -69,9 +69,4 @@ public class LuckBoostItem extends Item {
 
         return TypedActionResult.success(stack, world.isClient);
     }
-
-    @Override
-    public boolean hasGlint(ItemStack stack) {
-        return true;
-    }
 }
