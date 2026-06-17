@@ -23,6 +23,8 @@ import java.util.List;
 
 public class LuckEggItem extends Item {
 
+    public static final String LUCK_MASTER_TAG = "LuckMasterVillager";
+
     public LuckEggItem(Settings settings) {
         super(settings);
     }
@@ -66,7 +68,10 @@ public class LuckEggItem extends Item {
         villager.setCustomNameVisible(true);
         villager.setInvulnerable(true);
 
-        // 1 Netherite Ingot → 1 Şans Kristali
+        // NBT ile işaretle
+        villager.getCustomData().putBoolean(LUCK_MASTER_TAG, true);
+
+        // Trade'leri doğrudan ver
         TradeOfferList offers = new TradeOfferList();
         offers.add(new TradeOffer(
             new TradedItem(Items.NETHERITE_INGOT, 1),
@@ -75,9 +80,22 @@ public class LuckEggItem extends Item {
             10,
             0.05f
         ));
-
         villager.setOffers(offers);
+
         serverWorld.spawnEntity(villager);
+
+        // Spawn sonrası tekrar set et (1.21 fix)
+        serverWorld.getServer().execute(() -> {
+            TradeOfferList fixedOffers = new TradeOfferList();
+            fixedOffers.add(new TradeOffer(
+                new TradedItem(Items.NETHERITE_INGOT, 1),
+                new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1),
+                999,
+                10,
+                0.05f
+            ));
+            villager.setOffers(fixedOffers);
+        });
 
         PlayerEntity player = context.getPlayer();
         if (player != null) {
