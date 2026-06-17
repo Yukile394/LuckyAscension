@@ -23,8 +23,6 @@ import java.util.List;
 
 public class LuckEggItem extends Item {
 
-    public static final String LUCK_MASTER_TAG = "LuckMasterVillager";
-
     public LuckEggItem(Settings settings) {
         super(settings);
     }
@@ -68,10 +66,6 @@ public class LuckEggItem extends Item {
         villager.setCustomNameVisible(true);
         villager.setInvulnerable(true);
 
-        // NBT ile işaretle
-        villager.getCustomData().putBoolean(LUCK_MASTER_TAG, true);
-
-        // Trade'leri doğrudan ver
         TradeOfferList offers = new TradeOfferList();
         offers.add(new TradeOffer(
             new TradedItem(Items.NETHERITE_INGOT, 1),
@@ -84,7 +78,6 @@ public class LuckEggItem extends Item {
 
         serverWorld.spawnEntity(villager);
 
-        // Spawn sonrası tekrar set et (1.21 fix)
         serverWorld.getServer().execute(() -> {
             TradeOfferList fixedOffers = new TradeOfferList();
             fixedOffers.add(new TradeOffer(
