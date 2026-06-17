@@ -1,7 +1,6 @@
 package exloran.luckyascension.item;
 
 import exloran.luckyascension.util.LuckData;
-import exloran.luckyascension.util.LuckRewards;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -70,7 +69,6 @@ public class LuckCrystalItem extends Item {
             int newLevel = LuckData.increaseLuck(serverPlayer);
             int multiplier = LuckData.getMultiplier(serverPlayer);
 
-            // multiplier kadar OP item ver
             for (int i = 0; i < multiplier; i++) {
                 ItemStack reward = OP_REWARDS[RANDOM.nextInt(OP_REWARDS.length)].copy();
                 serverPlayer.getInventory().offerOrDrop(reward);
@@ -109,10 +107,5 @@ public class LuckCrystalItem extends Item {
         }
 
         return TypedActionResult.success(stack, world.isClient);
-    }
-
-    @Override
-    public boolean hasGlint(ItemStack stack) {
-        return true;
     }
 }
