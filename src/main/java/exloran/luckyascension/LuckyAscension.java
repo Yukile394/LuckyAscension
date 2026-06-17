@@ -3,6 +3,7 @@ package exloran.luckyascension;
 import exloran.luckyascension.event.MobDeathHandler;
 import exloran.luckyascension.event.PlayerJoinHandler;
 import exloran.luckyascension.item.LuckBoostItem;
+import exloran.luckyascension.item.LuckCrystalItem;
 import exloran.luckyascension.item.LuckEggItem;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.item.Item;
@@ -19,6 +20,7 @@ public class LuckyAscension implements ModInitializer {
 
     public static Item LUCK_BOOST;
     public static Item LUCK_EGG;
+    public static Item LUCK_CRYSTAL;
 
     @Override
     public void onInitialize() {
@@ -34,6 +36,12 @@ public class LuckyAscension implements ModInitializer {
             Registries.ITEM,
             Identifier.of(MOD_ID, "luck_egg"),
             new LuckEggItem(new Item.Settings().maxCount(16))
+        );
+
+        LUCK_CRYSTAL = Registry.register(
+            Registries.ITEM,
+            Identifier.of(MOD_ID, "luck_crystal"),
+            new LuckCrystalItem(new Item.Settings().maxCount(16))
         );
 
         PlayerJoinHandler.register();
