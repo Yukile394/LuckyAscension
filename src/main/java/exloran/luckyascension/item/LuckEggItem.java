@@ -1,16 +1,20 @@
 package exloran.luckyascension.item;
 
+import exloran.luckyascension.LuckyAscension;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradeOfferList;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.World;
 
@@ -29,9 +33,13 @@ public class LuckEggItem extends Item {
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.literal("§7Bu gizemli koylü,"));
-        tooltip.add(Text.literal("§7sans gucunu artirabilir."));
-        tooltip.add(Text.literal("§eYerlestir ve ticaret yap."));
+        tooltip.add(Text.literal("§7Bu gizemli yumurtadan"));
+        tooltip.add(Text.literal("§7Sans Ustasi dogacak."));
+        tooltip.add(Text.literal(""));
+        tooltip.add(Text.literal("§eYerlestir §7→ Koylü spawn olur"));
+        tooltip.add(Text.literal("§aTicaret §7→ §d1 Netherite = 1 Sans Kristali"));
+        tooltip.add(Text.literal(""));
+        tooltip.add(Text.literal("§8\"Sansin kapisi burada aciliyor...\""));
     }
 
     @Override
@@ -50,19 +58,34 @@ public class LuckEggItem extends Item {
         );
 
         villager.setVillagerData(
-            villager.getVillagerData().withProfession(VillagerProfession.LIBRARIAN)
+            villager.getVillagerData().withProfession(VillagerProfession.CLERIC)
         );
 
-        villager.setCustomName(Text.literal("§6§lSans Ustasi"));
+        villager.setCustomName(Text.literal("§d§lSans Ustasi"));
         villager.setCustomNameVisible(true);
         villager.setInvulnerable(true);
+
+        // Trade: 1 Netherite Ingot → 1 Şans Kristali
+        TradeOfferList offers = new TradeOfferList();
+        ItemStack costItem = new ItemStack(Items.NETHERITE_INGOT, 1);
+        ItemStack sellItem = new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1);
+
+        offers.add(new TradeOffer(
+            costItem,
+            sellItem,
+            999,   // max uses (sonsuz)
+            10,    // xp
+            0.05f  // price multiplier
+        ));
+
+        villager.setOffers(offers);
 
         serverWorld.spawnEntity(villager);
 
         PlayerEntity player = context.getPlayer();
         if (player != null) {
             player.sendMessage(Text.literal(
-                "§6§lSans Ustasi cagrildi! §eOnunla ticaret yap."
+                "§d§lSans Ustasi cagrildi! §e1 Netherite = 1 Sans Kristali"
             ), false);
             if (!player.isCreative()) {
                 context.getStack().decrement(1);
