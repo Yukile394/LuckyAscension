@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ANA",
+    "NDN",
+    "ANA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:amethyst_shard" },
+    "N": { "item": "minecraft:netherite_ingot" },
+    "D": { "item": "minecraft:diamond_block" }
+  },
+  "result": {
+    "id": "luckyascension:luck_crystal",
+    "count": 1
+  }
+}
