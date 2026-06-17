@@ -15,6 +15,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
+import net.minecraft.village.TradedItem;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.World;
 
@@ -65,21 +66,17 @@ public class LuckEggItem extends Item {
         villager.setCustomNameVisible(true);
         villager.setInvulnerable(true);
 
-        // Trade: 1 Netherite Ingot → 1 Şans Kristali
+        // 1 Netherite Ingot → 1 Şans Kristali
         TradeOfferList offers = new TradeOfferList();
-        ItemStack costItem = new ItemStack(Items.NETHERITE_INGOT, 1);
-        ItemStack sellItem = new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1);
-
         offers.add(new TradeOffer(
-            costItem,
-            sellItem,
-            999,   // max uses (sonsuz)
-            10,    // xp
-            0.05f  // price multiplier
+            new TradedItem(Items.NETHERITE_INGOT, 1),
+            new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1),
+            999,
+            10,
+            0.05f
         ));
 
         villager.setOffers(offers);
-
         serverWorld.spawnEntity(villager);
 
         PlayerEntity player = context.getPlayer();
