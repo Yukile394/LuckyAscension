@@ -40,7 +40,7 @@ public class LuckEggItem extends Item {
         tooltip.add(Text.literal("§eYerlestir §7→ Koylü spawn olur"));
         tooltip.add(Text.literal("§aTicaret §7→ §d1 Netherite = 1 Sans Kristali"));
         tooltip.add(Text.literal(""));
-        tooltip.add(Text.literal("§8\"Sansin kapisi burada aciliyor...\""));
+        tooltip.add(Text.literal("§2\"Sansin kapisi burada aciliyor...\""));
     }
 
     @Override
@@ -54,19 +54,26 @@ public class LuckEggItem extends Item {
         VillagerEntity villager = EntityType.VILLAGER.create(serverWorld);
         if (villager == null) return ActionResult.FAIL;
 
+        // 1. Konum
         villager.refreshPositionAndAngles(
             pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0f, 0f
         );
 
+        // 2. Önce dünyaya ekle (spawnEntity), SONRA tüm ayarları yap
+        // Bu sıralama despawn race condition'ını engeller
+        boolean spawned = serverWorld.spawnEntity(villager);
+        if (!spawned) return ActionResult.FAIL;
+
+        // 3. Tüm kalıcılık ve trade ayarlarını spawn SONRASI yap
         villager.setVillagerData(
             villager.getVillagerData().withProfession(VillagerProfession.CLERIC)
         );
-
         villager.setCustomName(Text.literal("§d§lSans Ustasi"));
         villager.setCustomNameVisible(true);
         villager.setInvulnerable(true);
-        villager.setPersistent();          // despawn'ı tamamen engeller
+        villager.setPersistent();
         villager.setAiDisabled(false);
+        villager.setHealth(villager.getMaxHealth());
 
         TradeOfferList offers = new TradeOfferList();
         offers.add(new TradeOffer(
@@ -77,24 +84,6 @@ public class LuckEggItem extends Item {
             0.05f
         ));
         villager.setOffers(offers);
-
-        serverWorld.spawnEntity(villager);
-
-        // Spawn sonrası bir kere daha set et (offer'ların kaybolmaması için)
-        serverWorld.getServer().execute(() -> {
-            if (villager.isAlive()) {
-                TradeOfferList fixedOffers = new TradeOfferList();
-                fixedOffers.add(new TradeOffer(
-                    new TradedItem(Items.NETHERITE_INGOT, 1),
-                    new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1),
-                    999,
-                    10,
-                    0.05f
-                ));
-                villager.setOffers(fixedOffers);
-                villager.setPersistent();
-            }
-        });
 
         PlayerEntity player = context.getPlayer();
         if (player != null) {
