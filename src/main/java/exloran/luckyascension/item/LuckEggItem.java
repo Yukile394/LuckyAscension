@@ -65,6 +65,8 @@ public class LuckEggItem extends Item {
         villager.setCustomName(Text.literal("§d§lSans Ustasi"));
         villager.setCustomNameVisible(true);
         villager.setInvulnerable(true);
+        villager.setPersistent();          // despawn'ı tamamen engeller
+        villager.setAiDisabled(false);
 
         TradeOfferList offers = new TradeOfferList();
         offers.add(new TradeOffer(
@@ -78,16 +80,20 @@ public class LuckEggItem extends Item {
 
         serverWorld.spawnEntity(villager);
 
+        // Spawn sonrası bir kere daha set et (offer'ların kaybolmaması için)
         serverWorld.getServer().execute(() -> {
-            TradeOfferList fixedOffers = new TradeOfferList();
-            fixedOffers.add(new TradeOffer(
-                new TradedItem(Items.NETHERITE_INGOT, 1),
-                new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1),
-                999,
-                10,
-                0.05f
-            ));
-            villager.setOffers(fixedOffers);
+            if (villager.isAlive()) {
+                TradeOfferList fixedOffers = new TradeOfferList();
+                fixedOffers.add(new TradeOffer(
+                    new TradedItem(Items.NETHERITE_INGOT, 1),
+                    new ItemStack(LuckyAscension.LUCK_CRYSTAL, 1),
+                    999,
+                    10,
+                    0.05f
+                ));
+                villager.setOffers(fixedOffers);
+                villager.setPersistent();
+            }
         });
 
         PlayerEntity player = context.getPlayer();
