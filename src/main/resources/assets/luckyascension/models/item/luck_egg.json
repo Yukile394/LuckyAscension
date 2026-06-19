@@ -1,6 +1,16 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "luckyascension:item/luck_egg"
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "NDN",
+    "   "
+  ],
+  "key": {
+    "N": { "item": "minecraft:netherite_ingot" },
+    "D": { "item": "minecraft:diamond" }
+  },
+  "result": {
+    "id": "luckyascension:luck_egg",
+    "count": 1
   }
 }
